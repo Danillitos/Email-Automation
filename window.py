@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog as fd
+import pyautogui
 import backend
 
 # _Libaries_ ^
@@ -33,12 +34,17 @@ def select_file_xlsx():
         pass
 
 def PegarDados():
-    emailValor = email.get()
-    senhaValor = senha.get()
-    sendSelectedExcel = selectedExcel.get()
-    sendSelectedFile = selectedFile.get()
+    
+    emailValor = email.get().strip()
+    senhaValor = senha.get().strip()
+    sendSelectedExcel = selectedExcel.get().strip()
+    receiver = columnName.get().strip()
+    sendSelectedFile = selectedFile.get().strip()
 
-    backend.processar(emailValor, senhaValor, sendSelectedExcel, sendSelectedFile)
+    if not all([emailValor, senhaValor, sendSelectedExcel, receiver, sendSelectedFile]):
+        return pyautogui.alert(text="Atenção! É necessário preencher todos os campos antes de continuar", title="Erro")
+
+    backend.processar(emailValor, senhaValor, sendSelectedExcel, receiver, sendSelectedFile)
 
 
 # _Functions_ ^
@@ -52,7 +58,11 @@ senha = tk.Entry(window, show='*', font=("Arial", fontSize))
 
 selectedExcel = tk.Entry(window, width=60)
 buttonExcel = tk.Button(text='...', command=select_file_xlsx, width=5)
-selectedExcelLabel = tk.Label(text='Excel com emails:')
+selectedExcelLabel = tk.Label(text='Excel com destinatários:')
+
+columnNameLabel = tk.Label(text="Nome da coluna de destinatários:")
+columnName = tk.Entry(window, font=("Arial", fontSize))
+
 
 selectedFile = tk.Entry(window, width=60)
 buttonFile = tk.Button(text='...', width=5)
@@ -71,6 +81,9 @@ senha.grid(row=3, sticky=tk.W, padx=5)
 selectedExcelLabel.grid(row=4, sticky=tk.W, pady=10)
 selectedExcel.grid(row=5, sticky=tk.W, padx=5)
 buttonExcel.grid(row=5, sticky=tk.W, column=1, padx=5)
+
+columnNameLabel.grid(row=4, column=2)
+columnName.grid(row=5, column=2)
 
 selectedFileLabel.grid(row=6, sticky=tk.W, pady=10)
 selectedFile.grid(row=7, sticky=tk.W, padx=5)
