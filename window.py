@@ -62,17 +62,17 @@ def PegarDados():
     if not all([emailValor, senhaValor, sendSelectedExcel, receiver, sendDocxFile]):
         return pyautogui.alert(text="Atenção! É necessário preencher todos os campos antes de continuar", title="Erro")
 
-    backend.processar(emailValor, senhaValor, sendSelectedExcel, receiver, sendDocxFile)
+    backend.processar(emailValor, senhaValor, sendSelectedExcel, receiver, sendDocxFile, sendFiles)
 
 
 # _Functions_ ^
 
 
 email_label = tk.Label(text="Email:", font=("Arial", fontSize))
-email = tk.Entry(window, font=("Arial", fontSize))
+email = tk.Entry(window, font=("Arial", fontSize), width=45)
 
 senha_label = tk.Label(text="Senha:", font=("Arial", fontSize))
-senha = tk.Entry(window, show='*', font=("Arial", fontSize))
+senha = tk.Entry(window, show='*', font=("Arial", fontSize), width=45)
 
 selectedExcel = tk.Entry(window, width=60)
 buttonExcel = tk.Button(text='...', command=select_file_xlsx, width=5)

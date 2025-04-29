@@ -7,7 +7,7 @@ import pandas as pd
 import smtplib
 import os
 
-def processar(remetente, senha, excelEmails, emailsColuna, arquivoDocx):
+def processar(remetente, senha, excelEmails, emailsColuna, arquivoDocx, anexos):
 
     lista_emails = pd.read_excel(excelEmails, usecols=[emailsColuna])
 
@@ -28,10 +28,19 @@ def processar(remetente, senha, excelEmails, emailsColuna, arquivoDocx):
     for destinatario in lista_emails[emailsColuna]:
 
         msg["To"] = destinatario
-        msg["Subject"] = "Teste"
+        msg["Subject"] = "Teste" #LEMBRE DE ALTERAR LEMBRE DE ALTERAR LEMBRE DE ALTERAR LEMBRE DE ALTERAR LEMBRE DE ALTERAR 
 
         conteudo_word = ler_docx(arquivoDocx)
         msg.attach(MIMEText(conteudo_word, "plain"))
+
+        arquivos = anexos.split()
+        for caminho in arquivos:
+            with open(caminho, "rb") as f:
+                parte = MIMEBase("application", "octet-stream")
+                parte.set_payload(f.read())
+            encoders.encode_base64(parte)
+            parte.add_header("Content-Disposition", f"attachment; filename={os.path.basename(caminho)}")
+            msg.attach(parte)
         
         server.sendmail(remetente, destinatario, msg.as_string())
      
