@@ -24,6 +24,7 @@ fontSize = 11
 
 # _Window Config_ ^
 
+# Essas três funções são estupidas, vou fazer uma função que faz tudo unificado depois
 def select_file_xlsx():
     filename = fd.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
     if filename != '':           
@@ -33,18 +34,35 @@ def select_file_xlsx():
     else: 
         pass
 
+def select_file_docx():
+    filename = fd.askopenfilename(filetypes=[("Word Documents", "*.docx")])
+    if filename != '':           
+        docxFile.delete(0, tk.END)
+        filename = filename.replace('/', '\\')
+        docxFile.insert(0, filename)
+    else: 
+        pass
+
+def select_files():
+    filename = fd.askopenfilenames()
+    if filename != '':
+        anexoFile.insert(0, filename)
+    else: 
+        pass
+
 def PegarDados():
     
     emailValor = email.get().strip()
     senhaValor = senha.get().strip()
     sendSelectedExcel = selectedExcel.get().strip()
     receiver = columnName.get().strip()
-    sendSelectedFile = selectedFile.get().strip()
+    sendDocxFile = docxFile.get().strip()
+    sendFiles = anexoFile.get().strip()
 
-    if not all([emailValor, senhaValor, sendSelectedExcel, receiver, sendSelectedFile]):
+    if not all([emailValor, senhaValor, sendSelectedExcel, receiver, sendDocxFile]):
         return pyautogui.alert(text="Atenção! É necessário preencher todos os campos antes de continuar", title="Erro")
 
-    backend.processar(emailValor, senhaValor, sendSelectedExcel, receiver, sendSelectedFile)
+    backend.processar(emailValor, senhaValor, sendSelectedExcel, receiver, sendDocxFile)
 
 
 # _Functions_ ^
@@ -64,9 +82,13 @@ columnNameLabel = tk.Label(text="Nome da coluna de destinatários:")
 columnName = tk.Entry(window, font=("Arial", fontSize))
 
 
-selectedFile = tk.Entry(window, width=60)
-buttonFile = tk.Button(text='...', width=5)
-selectedFileLabel = tk.Label(text='Selecionar Arquivo para realizar envios:')
+docxFile = tk.Entry(window, width=60)
+buttonDocx = tk.Button(text='...', command=select_file_docx, width=5)
+docxFileLabel = tk.Label(text='Selecionar word para o corpo do email:')
+
+anexoFile = tk.Entry(window, width=60)
+buttonAnexo = tk.Button(text='...', command=select_files, width=5)
+anexoFileLabel = tk.Label(text='Selecionar Arquivos para realizar envio:')
 
 startButton = tk.Button(text="Começar", width=10, height=3, command=PegarDados)
 
@@ -85,10 +107,14 @@ buttonExcel.grid(row=5, sticky=tk.W, column=1, padx=5)
 columnNameLabel.grid(row=4, column=2)
 columnName.grid(row=5, column=2)
 
-selectedFileLabel.grid(row=6, sticky=tk.W, pady=10)
-selectedFile.grid(row=7, sticky=tk.W, padx=5)
-buttonFile.grid(row=7, sticky=tk.W, column=1, padx=5)
+docxFileLabel.grid(row=6, sticky=tk.W, pady=10)
+docxFile.grid(row=7, sticky=tk.W, padx=5)
+buttonDocx.grid(row=7, sticky=tk.W, column=1, padx=5)
 
-startButton.grid(row=8, sticky=tk.W, padx=5, pady=10)
+anexoFileLabel.grid(row=8, sticky=tk.W, pady=10)
+anexoFile.grid(row=9, sticky=tk.W, padx=5)
+buttonAnexo.grid(row=9, sticky=tk.W, column=1, padx=5)
+
+startButton.grid(row=10, sticky=tk.W, padx=5, pady=10)
 
 window.mainloop()

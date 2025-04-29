@@ -1,34 +1,38 @@
-import pandas
-import undetected_chromedriver as uc
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
-import random
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email import encoders
+from docx import Document
+import pandas as pd
+import smtplib
+import os
 
-def humanLikeTyping(element, text, delay=0.1):
-    for character in text:
-        element.send_keys(character)
-        time.sleep(random.uniform(0.1, delay))
+def processar(remetente, senha, excelEmails, emailsColuna, arquivoDocx):
 
-def processar(email, senha, excel_path, colunaDestinatario, file_path):
+    lista_emails = pd.read_excel(excelEmails, usecols=[emailsColuna])
 
-    destinatarios = pandas.read_excel(excel_path, usecols=[[colunaDestinatario]])
-    print(destinatarios)
+    msg = MIMEMultipart()
+    msg["From"] = remetente
 
-    options = uc.ChromeOptions()
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    driver = uc.Chrome(options=options)
-    driver.get('https://conta.uol.com.br/login?t=default')
+    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+    server.login(remetente, senha)
+    
+    def ler_docx(Docx):
+        doc = Document(Docx)
+        texto = []
+        for paragraphs in doc.paragraphs:
+            texto.append(paragraphs.text)
+        return '\n'.join(texto)
 
-    emailInput = driver.find_element(By.XPATH, '//*[@id="user"]')
-    humanLikeTyping(emailInput, email)
 
-    driver.find_element(By.XPATH, '//*[@id="button-submit"]').click()
+    for destinatario in lista_emails[emailsColuna]:
 
-    senhaShow = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="pass"]')))
-    if senhaShow:
-        senhaInput = driver.find_element(By.XPATH, '//*[@id="pass"]')
-        humanLikeTyping(senhaInput, senha)
+        msg["To"] = destinatario
+        msg["Subject"] = "Teste"
 
-    driver.find_element(By.XPATH, '//*[@id="button-submit"]').click()
+        conteudo_word = ler_docx(arquivoDocx)
+        msg.attach(MIMEText(conteudo_word, "plain"))
+        
+        server.sendmail(remetente, destinatario, msg.as_string())
+     
+    server.quit()
