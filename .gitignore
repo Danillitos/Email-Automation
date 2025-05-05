@@ -1,5 +1,6 @@
 # Bytecode e arquivos temporários
 __pycache__/
+*.py[cod]
 
 
 # Arquivos do PyInstaller
@@ -7,4 +8,5 @@ __pycache__/
 /build/
 
 # Arquivos de configuração local
+
 config.json
