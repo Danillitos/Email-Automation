@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog as fd
 import pyautogui
 import backend
+import config
 
 # _Libaries_ ^
 
@@ -61,6 +62,8 @@ def PegarDados():
 
     if not all([emailValor, senhaValor, sendSelectedExcel, receiver, sendDocxFile]):
         return pyautogui.alert(text="Atenção! É necessário preencher todos os campos antes de continuar", title="Erro")
+    
+    config.salvar_config({'email': emailValor, 'senha': senhaValor, 'selectedExcel': sendSelectedExcel, 'columnName': receiver, 'docxFile': sendDocxFile, 'anexoFile': sendFiles})
 
     backend.processar(emailValor, senhaValor, sendSelectedExcel, receiver, sendDocxFile, sendFiles)
 
@@ -116,5 +119,18 @@ anexoFile.grid(row=9, sticky=tk.W, padx=5)
 buttonAnexo.grid(row=9, sticky=tk.W, column=1, padx=5)
 
 startButton.grid(row=10, sticky=tk.W, padx=5, pady=10)
+
+dadosSalvos = config.carregar_config()
+emailSalvo = dadosSalvos.get('email', '')
+email.insert(0, emailSalvo)
+senhaSalvo = dadosSalvos.get('senha', '')
+senha.insert(0, senhaSalvo)
+selectedExcelSalvo = dadosSalvos.get('selectedExcel', '')
+selectedExcel.insert(0, selectedExcelSalvo)
+columnNameSalvo = dadosSalvos.get('columnName', '')
+columnName.insert(0, columnNameSalvo)
+docxFileSalvo = dadosSalvos.get('docxFile', '')
+docxFile.insert(0, docxFileSalvo)
+
 
 window.mainloop()

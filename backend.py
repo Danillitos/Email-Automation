@@ -11,9 +11,6 @@ def processar(remetente, senha, excelEmails, emailsColuna, arquivoDocx, anexos):
 
     lista_emails = pd.read_excel(excelEmails, usecols=[emailsColuna])
 
-    msg = MIMEMultipart()
-    msg["From"] = remetente
-
     server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
     server.login(remetente, senha)
     
@@ -27,6 +24,8 @@ def processar(remetente, senha, excelEmails, emailsColuna, arquivoDocx, anexos):
 
     for destinatario in lista_emails[emailsColuna]:
 
+        msg = MIMEMultipart()
+        msg["From"] = remetente
         msg["To"] = destinatario
         msg["Subject"] = "Teste" #LEMBRE DE ALTERAR LEMBRE DE ALTERAR LEMBRE DE ALTERAR LEMBRE DE ALTERAR LEMBRE DE ALTERAR 
 

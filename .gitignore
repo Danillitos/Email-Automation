@@ -1,0 +1,10 @@
+# Bytecode e arquivos temporários
+__pycache__/
+
+
+# Arquivos do PyInstaller
+/dist/
+/build/
+
+# Arquivos de configuração local
+config.json
